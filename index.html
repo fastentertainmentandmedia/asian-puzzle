@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#4a5568">
+  <title>ASIAN PUZZLE</title>
+
+  <link rel="icon" type="image/png" sizes="16x16" href="game/assets/favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="game/assets/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="game/assets/favicon/apple-touch-icon.png">
+
+  <style>
+    html { visibility: hidden; }
+    html.ready { visibility: visible; }
+
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 20px;
+      background: #f4ece2;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      text-align: center;
+      visibility: visible;
+      overflow: hidden;
+    }
+    html.ready #preloader { display: none; }
+
+    .preloader-logo {
+      width: min(80vw, 420px);
+      height: auto;
+      display: block;
+      animation: preloader-bounce 1s ease-in-out infinite;
+    }
+    .preloader-text {
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    @keyframes preloader-bounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+  </style>
+
+  <link rel="stylesheet" href="core/css/base.css">
+  <link rel="stylesheet" href="core/css/layout.css">
+  <link rel="stylesheet" href="core/css/overlays.css">
+
+  <link rel="stylesheet" href="game/css/theme.css">
+</head>
+<body>
+
+  <div id="preloader">
+    <img class="preloader-logo" src="game/assets/logo.png" alt="Grill King Puzzle">
+    <div class="preloader-text">Загрузка...</div>
+  </div>
+
+  <div class="game-wrapper" id="gameWrapper">
+
+<header class="header" id="header">
+  <div class="hud-top" aria-hidden="true">
+
+    <div class="hud-col hud-col-left">
+      <span class="hud-group hud-stat timer" id="timerBox">
+        <span class="stat-value hud-timer" id="hudTimer">00:00</span>
+      </span>
+      <span class="hud-group hud-stat score" id="scoreBox">
+        <span class="stat-label" id="scoreLabel">Очки</span>
+        <span class="stat-value" id="scoreValue">0</span>
+      </span>
+    </div>
+
+    <div class="header-brand" id="headerBrand">
+      <img src="game/assets/logo.png" alt="Grill King Puzzle" class="header-logo">
+    </div>
+
+    <div class="hud-col hud-col-right">
+      <span class="hud-group hud-stat max-combo" id="maxComboBox">
+        <span class="stat-label" id="maxComboLabel">Комбо</span>
+        <span class="stat-value" id="maxComboValue">x0</span>
+      </span>
+      <div class="combo-wrap" id="comboWrap">
+        <div class="combo-glow"></div>
+        <div class="combo-bar-track">
+          <div class="combo-bar-fill" id="comboFill"></div>
+          <div class="combo-label" id="comboLabel">КОМБО</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+    <div class="board-container" id="boardContainer">
+      <!-- Доска рендерится из JS -->
+    </div>
+
+    <div id="limitHint" class="touch-hint" role="status" aria-live="polite">
+      <div class="hint-limit">
+        <div class="hint-limit-title">Время вышло</div>
+        <div class="hint-limit-record">
+          Ваш рекорд счёта: <span id="limitBestScore">0</span>
+        </div>
+        <div class="hint-limit-streak">
+          Ваша лучшая серия комбо: <span id="limitBestStreak">x0</span>
+        </div>
+        <div class="hint-limit-body">
+          <p>Надеемся, что смогли вас развлечь</p>
+          <p>Ждём вас снова!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="intro-modal hidden" id="introModal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+  <div class="intro-content">
+    <div class="intro-brand">
+      <img src="game/assets/logo.png" alt="Grill King Puzzle" class="intro-logo"
+           onerror="this.style.display='none'; this.parentNode.textContent='GRILL KING PUZZLE';">
+    </div>
+
+    <div class="intro-rules">
+      <ul>
+        <li>Перетаскивай объекты между ячейками.</li>
+        <li>Собери 3 одинаковых в одной ячейке и заработай очки.</li>
+        <li>Успевай за комбо-полоской: серия комбо даёт больше очков!</li>
+        <li>Набери как можно больше очков за <span id="introLimitMinutes">10</span> мин.</li>
+        <li>Играй сам или соревнуйся с друзьями!</li>
+      </ul>
+    </div>
+
+    <div class="intro-cookie">
+      Мы используем файлы cookie. <br>Продолжая, вы соглашаетесь с <a href="privacy.html">политикой конфиденциальности</a>
+    </div>
+
+    <button class="intro-accept" id="introAccept" type="button">Хорошо</button>
+  </div>
+</div>
+
+  <script type="module" src="core/js/main.js"></script>
+    <!-- credits -->
+  <a href="https://www.flaticon.com/free-icons/coffee" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="coffee icons">Coffee icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/food-and-restaurant" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="food and restaurant icons">Food and restaurant icons created by PIXARTIST - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/cafe" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="cafe icons">Cafe icons created by LAB Design Studio - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/iced-latte" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="iced latte icons">Iced latte icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/latte-macchiato" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="latte macchiato icons">Latte macchiato icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/cappuccino" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="cappuccino icons">Cappuccino icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/coffee" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="coffee icons">Coffee icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/bread" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="bread icons">Bread icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/iced-coffee" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="iced coffee icons">Iced coffee icons created by mikan933 - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/coffee" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="coffee icons">Coffee icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/bubble-tea" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="bubble tea icons">Bubble tea icons created by iconixar - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/food-and-restaurant" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" title="food and restaurant icons">Food and restaurant icons created by surang - Flaticon</a>
+    <a href="https://www.flaticon.com/free-icons/gyoza" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Gyoza icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/matcha" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Matcha icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/onigiri" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Onigiri icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/kimbap" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Kimbap icons created by Kise1ki - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/poke" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Poke icons created by Magnific - Flaticon</a>
+  <a href="https://www.flaticon.com/free-icons/sushi" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Sushi icons created by amonrat rungreangfangsai - Flaticon</a>
+  <a href="https://pngtree.com/freepng/chinese-dragon-head_5399712.html" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">png image from pngtree.com/</a>
+</body>
+</html>
